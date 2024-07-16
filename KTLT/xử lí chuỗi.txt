@@ -1,0 +1,196 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+typedef struct {
+	int ngay;
+	int thang;
+	int nam;
+}NGAY;
+
+typedef struct {
+	int gio;
+	int phut;
+}GIO;
+
+typedef struct {
+	string maChuyenBay;
+	NGAY ngayBay;
+	GIO gioBay;
+	string NoiDen;
+}CHUYENBAY;
+
+int soLuong(int n) {
+	if (n >= 0 && n <= 9) {
+		return 1;
+	}
+	else {
+		return 1 + soLuong(n / 10);
+	}
+}
+
+void nhapNgayBay(CHUYENBAY& a) {
+	string s;
+	getline(cin, s);
+	string needle = " ";
+
+	//tim ngay bay
+	int startPos = 0;
+	int foundPos = s.find_first_of(needle, startPos);
+	a.ngayBay.ngay = stoi(s.substr(startPos, foundPos));
+
+	//tim thang bay
+	startPos += (foundPos - startPos) + needle.length();
+	foundPos = s.find_first_of(needle, startPos);
+	a.ngayBay.thang = stoi(s.substr(startPos, foundPos - startPos));
+
+	//tim nam bay
+	startPos += (foundPos - startPos) + needle.length();
+	a.ngayBay.nam = stoi(s.substr(startPos, s.length() - (foundPos)));
+}
+
+void xuatNgayBay(CHUYENBAY a) {
+	string ngay = "";
+	string thang = "";
+	string nam = to_string(a.ngayBay.nam);
+	if (soLuong(a.ngayBay.ngay) == 1) {
+		ngay = "0" + to_string(a.ngayBay.ngay);
+	}
+	else {
+		ngay = to_string(a.ngayBay.ngay);
+	}
+	if (soLuong(a.ngayBay.thang) == 1) {
+		thang = "0" + to_string(a.ngayBay.thang);
+	}
+	else {
+		thang = to_string(a.ngayBay.thang);
+	}
+	cout << ngay << "/" << thang << "/" << nam << endl;
+}
+
+void nhapGioBay(CHUYENBAY& a) {
+	string s;
+	getline(cin, s);
+	string needle = " ";
+
+	//tim gio bay
+	int startPos = 0;
+	int foundPos = s.find_first_of(needle, startPos);
+	a.gioBay.gio = stoi(s.substr(startPos, foundPos));
+
+	//tim phut bat
+	startPos += (foundPos - startPos) + needle.length();
+	a.gioBay.phut = stoi(s.substr(startPos, s.length() - foundPos));
+}
+
+void xuatGioBay(CHUYENBAY a) {
+	string gio = "";
+	string phut = "";
+	if (soLuong(a.gioBay.gio) == 1) {
+		gio = "0" + to_string(a.gioBay.gio);
+	}
+	else {
+		gio = to_string(a.gioBay.gio);
+	}
+	if (soLuong(a.gioBay.phut) == 1) {
+		phut = "0" + to_string(a.gioBay.phut);
+	}
+	else {
+		phut = to_string(a.gioBay.phut);
+	}
+	cout << gio << ":" << phut << endl;
+}
+
+void nhapThongTin(CHUYENBAY& x) {
+	getline(cin, x.maChuyenBay);
+	nhapNgayBay(x);
+	nhapGioBay(x);
+	getline(cin, x.NoiDen);
+}
+
+void xuatThongTin(CHUYENBAY x) {
+	cout << x.maChuyenBay << endl;
+	xuatNgayBay(x);
+	xuatGioBay(x);
+	cout << x.NoiDen;
+}
+
+void nhapMang(CHUYENBAY*& a, int& n) {
+	for (int i = 0; i < n; i++) {
+		nhapThongTin(a[i]);
+	}
+}
+
+void xuatMang(CHUYENBAY* a, int n) {
+	for (int i = 0; i < n; i++) {
+		xuatThongTin(a[i]);
+		cout << endl;
+	}
+}
+
+void timMa(CHUYENBAY* a, int n, string s) {
+	for (int i = 0; i < n; i++) {
+		if (s == a[i].maChuyenBay) {
+			xuatThongTin(a[i]);
+		}
+	}
+}
+
+void timNgayNhieuChuyenBayNhat(CHUYENBAY* a, int n) {
+	int max = a[0].ngayBay.ngay;
+	for (int i = 0; i < n; i++) {
+		if (max < a[i].ngayBay.ngay) {
+			max = a[i].ngayBay.ngay;
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		if (max == a[i].ngayBay.ngay) {
+			xuatNgayBay(a[i]);
+		}
+	}
+
+}
+
+
+int main() {
+	
+	int n;
+	cin >> n;
+	cin.ignore();
+	CHUYENBAY* a = new CHUYENBAY[n];
+	nhapMang(a, n);
+	string code;
+	getline(cin, code);
+
+	xuatMang(a, n);
+	timNgayNhieuChuyenBayNhat(a, n);
+	timMa(a, n, code);
+	
+}
+
+
+//TINH XuLi(string s) {
+//	TINH result;
+//	string temp = "_";
+//	//05_Ha Giang_883388_7929.5
+//	//Tim ma tinh
+//	int startPos = 0;
+//	int foundPos = s.find_first_of(temp, startPos); //2
+//	result.maTinh = stoi(s.substr(startPos, foundPos)); //05
+//
+//	//Tim ten tinh
+//	startPos += foundPos + temp.length(); //3
+//	foundPos = s.find_first_of(temp, startPos);
+//	result.tenTinh = s.substr(startPos, foundPos - startPos);
+//
+//	//Tim dan so
+//	startPos += (foundPos - startPos) + temp.length();
+//	foundPos = s.find_first_of(temp, startPos);
+//	result.danSo = stoi(s.substr(startPos, foundPos - startPos));
+//
+//	//Tim dien tich
+//	startPos += (foundPos - startPos) + temp.length();
+//	result.dienTich = stod(s.substr(startPos, s.length() - (startPos + foundPos)));
+//
+//	return result;
+//}

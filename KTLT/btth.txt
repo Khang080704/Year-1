@@ -1,0 +1,187 @@
+#include<iostream>
+#include<string>
+#include<fstream>
+
+using namespace std;
+
+struct Node {
+	int data;
+	struct Node* pNext;
+};
+
+struct Linked_List {
+	Node* head;
+	Node* tail;
+};
+
+void KhoiTao(Linked_List& list) {
+	list.head = list.tail = NULL;
+}
+
+bool KiemTraRong(Linked_List list) {
+	if (list.head == NULL && list.tail == NULL) {
+		return true;
+	}
+	return false;
+}
+
+Node* KhoiTaoNode(int x) {
+	Node* newNode = new Node;
+	if (newNode == NULL) {
+		cout << "Khong du vung nho ";
+		return NULL;
+	}
+	else {
+		newNode->data = x;
+		newNode->pNext = NULL;
+		return newNode;
+	}
+}
+
+void ThemVaoRong(Linked_List& list, int x) {
+	Node* newNode = KhoiTaoNode(x);
+	list.head = list.tail = newNode;
+}
+
+void ThemVaoDau(Linked_List& list, int x) {
+	if (KiemTraRong(list)) {
+		ThemVaoRong(list, x);
+	}
+	else {
+		Node* p = KhoiTaoNode(x);
+		p->pNext = list.head;
+		list.head = p;
+	}
+}
+
+void ThemVaoCuoi(Linked_List& list, int x) {
+	if (KiemTraRong(list)) {
+		ThemVaoRong(list, x);
+	}
+	else {
+		Node* p = KhoiTaoNode(x);
+		list.tail->pNext = p;
+		list.tail = p;
+	}
+}
+
+void GhiDanhSach(Linked_List list, string output) {
+	ofstream writter(output, ios::out);
+
+	for (Node* i = list.head; i != NULL; i = i->pNext) {
+		writter << i->data << " ";
+	}
+	writter << endl;
+}
+
+Node* XoaCuoi(Linked_List& list) {
+	Node* pTruoc = list.head;
+	Node* pSau = pTruoc->pNext;
+	while (pSau->pNext != NULL) {
+		pTruoc = pTruoc->pNext;
+		pSau = pTruoc->pNext;
+	}
+	pTruoc->pNext = NULL;
+	list.tail = pTruoc;
+	return pSau;
+}
+
+Linked_List kiemTraNhoHonK(Linked_List list, int k) {
+	Linked_List temp;
+	KhoiTao(temp);
+	bool flag = true;
+
+	for (Node* i = list.head; i != NULL; i = i->pNext) {
+		if (i->data < k) {
+			ThemVaoCuoi(temp, i->data);
+		}
+	}
+
+	if (KiemTraRong(temp)) {
+		ThemVaoCuoi(temp, -1);
+	}
+	return temp;
+}
+
+Linked_List kiemTraLonHonK(Linked_List list, int k) {
+	Linked_List temp;
+	KhoiTao(temp);
+
+	for (Node* i = list.head; i != NULL; i = i->pNext) {
+		if (i->data >= k) {
+			ThemVaoCuoi(temp, i->data);
+		}
+	}
+
+	if (KiemTraRong(temp)) {
+		ThemVaoCuoi(temp, -1);
+	}
+	return temp;
+}
+
+void ThemVaoGiua(Linked_List& list, Node* q, int k) {
+	Node* p = KhoiTaoNode(k);
+	p->pNext = q->pNext;
+	q->pNext = p;
+}
+
+void ThemK(Linked_List& list, int k) {
+	Node* pTruoc = list.head;
+	Node* pSau = pTruoc->pNext;
+	while (pSau->pNext != NULL) {
+		pTruoc = pTruoc->pNext;
+		pSau = pTruoc->pNext;
+	}
+	ThemVaoGiua(list, pTruoc, k);
+}
+
+int main()
+{
+	string input = "Text.txt";
+	ifstream reader(input, ios::in);
+	string buffer;
+	Linked_List list;
+	KhoiTao(list);
+
+	while (!reader.eof()) {
+		reader >> buffer;
+		int value = stoi(buffer);
+		ThemVaoCuoi(list, value);
+	}
+
+	Node* p = XoaCuoi(list);
+	int k = p->data;
+	string output = "output.txt";
+	ofstream writter(output, ios::out);
+
+	for (Node* i = list.head; i != NULL; i = i->pNext) {
+		writter << i->data << " ";
+	}
+	
+	writter << endl;
+	
+	Linked_List NhoHonK = kiemTraNhoHonK(list, k);
+
+	for (Node* i = NhoHonK.head; i != NULL; i = i->pNext) {
+		writter << i->data << " ";
+	}
+
+	writter << endl;
+
+	Linked_List LonHonK = kiemTraLonHonK(list, k);
+
+	for (Node* i = LonHonK.head; i != NULL; i = i->pNext) {
+		writter << i->data << " ";
+	}
+
+	writter << endl;
+
+	ThemK(list, k);
+
+	for (Node* i = list.head; i != NULL; i = i->pNext) {
+		writter << i->data << " ";
+	}
+
+	reader.close();
+	return 0;
+}

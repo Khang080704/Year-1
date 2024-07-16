@@ -1,0 +1,249 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <unordered_map>
+using namespace std;
+
+typedef struct {
+	string MaChuyenBay;
+	string NgayBay;
+	string GioBay;
+	string NoiDi;
+	string NoiDen;
+}ChuyenBay;
+
+struct Node {
+	ChuyenBay data;
+	Node* pNext;
+};
+
+struct Node2 {
+	string x;
+	Node2* Next;
+};
+
+struct Linked_List {
+	Node* Head;
+	Node* Tail;
+};
+
+struct Linked2_list {
+	Node2* head;
+	Node2* tail;
+};
+
+void khoiTao(Linked_List& list) {
+	list.Head = list.Tail = NULL;
+}
+
+void khoitaochuoi(Linked2_list& list) {
+	list.head = list.tail = NULL;
+}
+
+Node* createNode(ChuyenBay x) {
+	Node* p = new Node;
+	p->data.GioBay = x.GioBay;
+	p->data.MaChuyenBay = x.MaChuyenBay;
+	p->data.NgayBay = x.NgayBay;
+	p->data.NoiDen = x.NoiDen;
+	p->data.NoiDi = x.NoiDi;
+	p->pNext = NULL;
+	return p;
+}
+
+Node2* KhoitaoNode(string x) {
+	Node2* p = new Node2;
+	p->x = x;
+	p->Next = NULL;
+	return p;
+}
+
+bool kiemTraRong(Linked_List list) {
+	if (list.Head == NULL && list.Tail == NULL)
+		return true;
+	return false;
+}
+
+bool kiemTraChuoiRong(Linked2_list list) {
+	if (list.head == NULL && list.tail == NULL)
+		return true;
+	return false;
+}
+
+void themVaoRong(Linked_List& list, ChuyenBay x) {
+	Node* p = createNode(x);
+	list.Head = list.Tail = p;
+}
+
+void themChuoiRong(Linked2_list& list, string x) {
+	Node2* p = KhoitaoNode(x);
+	list.head = list.tail = p;
+}
+
+void themVaoCuoi(Linked_List& list, ChuyenBay x) {
+	Node* p = createNode(x);
+	if (kiemTraRong(list))
+		themVaoRong(list,x);
+	else {
+		list.Tail->pNext = p;
+		list.Tail = p;
+	}
+}
+
+void themChuoiVaoCuoi(Linked2_list& list, string value) {
+	Node2* p = KhoitaoNode(value);
+	if (kiemTraChuoiRong(list)) {
+		themChuoiRong(list, value);
+	}
+	else {
+		list.tail->Next = p;
+		list.tail = p;
+	}
+}
+
+void in(Node* i) {
+	cout << i->data.MaChuyenBay << "_" << i->data.NgayBay << "_" << i->data.NoiDi << "_" << i->data.NoiDen << endl;
+}
+
+void sapXeptang(int* a, int n) {
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = i + 1; j < n; j++) {
+			if (a[i] > a[j]) {
+				int temp = a[i];
+				a[i] = a[j];
+				a[j] = temp;
+			}
+		}
+	}
+}
+
+int soChuso(int n) {
+	if (n >= 1 && n <= 9) {
+		return 1;
+	}
+	return 1 + soChuso(n / 10);
+}
+
+void TimChuyenBayTheoMa(Linked_List list, string code) {
+	bool flag = true;
+	Linked_List temp;
+	khoiTao(temp);
+	for (Node* i = list.Head; i != NULL; i = i->pNext) {
+		if (code == i->data.MaChuyenBay) {
+			in(i);
+		}
+
+	}
+	if (kiemTraRong(temp))
+		cout << "Khong tim thay";
+}
+
+string xoaCuoi(string* a, int& n) {
+	string value = a[n - 1];
+	n--;
+	return value;
+}
+
+int main() {
+	//Xu li file dua vao DSLK - Da lam xong-------------------
+	string input = "input.txt";
+	ifstream reader(input, ios::in);
+	ChuyenBay* buffer = new ChuyenBay[20];
+	string* temp = new string[50];
+	int sub = 0;
+	while (!reader.eof()) {
+		getline(reader, temp[sub]);
+		sub++;
+	}
+
+	string findCode = xoaCuoi(temp, sub);
+	int count = 0;
+	for (int i = 0; i < sub; i = i + 5) {
+		buffer[count].MaChuyenBay = temp[i];
+		buffer[count].NgayBay = temp[i + 1];
+		buffer[count].GioBay = temp[i + 2];
+		buffer[count].NoiDi = temp[i + 3];
+		buffer[count].NoiDen = temp[i + 4];
+		count++;
+	}
+
+	Linked_List list;
+	khoiTao(list);
+	for (int i = 0; i < count; i++) {
+		themVaoCuoi(list, buffer[i]);
+	}
+	//-------------------------------------------
+
+	//Ghi file - Xong ------------------------------------------
+	string output = "output.txt";
+	ofstream writter(output, ios::out);
+	for (Node* i = list.Head; i != NULL; i = i->pNext) {
+		writter << i->data.MaChuyenBay << "_" << i->data.NgayBay <<"_"<<i->data.GioBay << "_" << i->data.NoiDi << "_" << i->data.NoiDen << endl;
+	}
+	//------------------------------------------------------------
+
+	//Xu li tim cac ngay lon nhat
+	int* day = new int[50];
+	int DayCount = 0;
+	int dem = 1;
+	for (Node* i = list.Head; i != NULL; i = i->pNext) {
+		day[DayCount] = stoi(i->data.NgayBay.substr(8, 2));
+		DayCount++;
+	}
+	unordered_map<int, int> frequencyMap;
+	int maxFrequency = 0;
+
+	// Dem so lan xuat hien cac phan tu trong mang
+	for (int i = 0; i < DayCount; i++) {
+		frequencyMap[day[i]]++;
+		maxFrequency = max(maxFrequency, frequencyMap[day[i]]);
+	}
+	int* subItem = new int[50];
+	int subCount = 0;
+	for (int i = 0; i < DayCount; i++) {
+		if (frequencyMap[day[i]] == maxFrequency) {
+			subItem[subCount] = day[i];
+			subCount++;
+		}
+	}
+
+	string* ngayLonNhat = new string[20];
+	for (int i = 0; i < subCount; i++) {
+		if (soChuso(subItem[i]) == 1) {
+			ngayLonNhat[i] = "0" + to_string(subItem[i]);
+		}
+		else {
+			ngayLonNhat[i] = to_string(subItem[i]);
+		}
+	}
+	
+	int j = 0;
+	while (j < subCount) {
+		for (Node* i = list.Head; i != NULL; i = i->pNext) {
+			if (ngayLonNhat[j] == i->data.NgayBay.substr(8, 2)) {
+				writter << i->data.NgayBay << " " << endl;
+			}
+		}
+		j++;
+	}
+
+
+
+	// --------Tim chuyen bay theo ma - Da lam xong
+	bool flag = true;
+	Linked2_list code;
+	khoitaochuoi(code);
+	for (Node* i = list.Head; i != NULL; i = i->pNext) {
+		if (findCode == i->data.MaChuyenBay) {
+			writter << i->data.MaChuyenBay << "_" << i->data.NgayBay << "_" << i->data.GioBay << "_" << i->data.NoiDi << "_" << i->data.NoiDen << endl;
+			themChuoiVaoCuoi(code, i->data.MaChuyenBay);
+		}
+
+	}
+	if (kiemTraChuoiRong(code))
+		writter << "Khong tim thay";
+
+	reader.close();
+	
+	return 0;
+}

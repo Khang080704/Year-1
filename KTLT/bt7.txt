@@ -1,0 +1,212 @@
+#include <iostream>
+
+using namespace std;
+
+struct Node {
+	int data;
+	struct Node* pNext;
+};
+
+struct Linked_List {
+	Node* Head;
+	Node* Tail;
+};
+
+void KhoiTao(Linked_List& list);
+Node* KhoiTaoNode(int x);
+void ThemPhanTuVaoCuoiDanhSach(Linked_List& list, int x);
+void DuyetDanhSach(Linked_List list);
+int soLuong(Linked_List list);
+void NhapMang(int* a, int& n);
+void XuatMang(int* a, int n);
+void timKiem(Linked_List, int n, int* a, int m);
+void xoaPT(int* a, int& n, int index);
+void xoaPtTrung(int* a, int&n);
+void timKiemDanhSach(Linked_List& list, int n, int* a, int& m);
+
+int main() {
+	Linked_List list; 
+	KhoiTao(list);
+	cout << "Nhap so luong phan tu cua danh sach: ";
+	int n = 0;
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		cout << "Nhap phan tu thu " << i + 1 << " cua danh sach: ";
+		int x; cin >> x;
+		ThemPhanTuVaoCuoiDanhSach(list, x);
+	}
+
+	int m = 0;
+	cout << "Nhap so luong phan tu cua mang 1 chieu: "; cin >> m;
+	int* a = new int[m];
+	NhapMang(a, m);
+
+	cout << "Danh sach lien ket da nhap: "; DuyetDanhSach(list);
+	cout << "Mang 1 chieu da nhap: "; XuatMang(a, m);
+	cout << endl;
+	cout << "Yeu cau 1: ";
+	timKiem(list, n, a, m);
+	cout << endl;
+	cout << "Yeu cau 2: " << endl;
+	timKiemDanhSach(list, n, a, m);
+	
+	delete[] a;
+ 	return 0;
+}
+
+void KhoiTao(Linked_List& list) {
+	list.Head = NULL;
+	list.Tail = NULL;
+}
+Node* KhoiTaoNode(int x) {
+	Node* p = new Node;
+	if (p == NULL) cout << "Khong du bo nho de cap phat" << endl;
+	else {
+		p->data = x;
+		p->pNext = NULL;
+	}
+
+	return p;
+}
+
+void ThemPhanTuVaoCuoiDanhSach(Linked_List& list, int x) {
+	Node* p = KhoiTaoNode(x);
+	if (list.Head == NULL) list.Head = list.Tail = p;
+	else {
+		list.Tail->pNext = p;
+		list.Tail = p;
+	}
+}
+
+void DuyetDanhSach(Linked_List list) {
+	for (Node* k = list.Head; k != NULL; k = k->pNext) {
+		cout << k->data << " ";
+	}
+
+	cout << endl;
+}
+
+int soLuong(Linked_List list) {
+	int count = 0;
+
+	for (Node* p = list.Head; p != NULL; p = p->pNext) {
+		count++;
+	}
+
+	return count;
+}
+
+void NhapMang(int* a, int& n) {
+	for (int i = 0; i < n; i++) {
+		cout << "Nhap phan tu a[" << i << "]: ";
+		cin >> a[i];
+	}
+}
+
+void XuatMang(int* a, int n) {
+	for (int i = 0; i < n; i++) {
+		cout << a[i] << " ";
+	}
+}
+
+void timKiem(Linked_List list, int n, int* a, int m) {
+	bool flag = true;
+	int count = 0;
+	int* subArr = new int[100];
+
+	for (int i = 0; i < m; i++) {
+		for (Node* j = list.Head; j != NULL; j = j->pNext) {
+			if (a[i] == j->data) {
+				flag = false;
+				break;
+			}
+			else {
+				flag = true;
+			}
+		}
+		if (flag) {
+			subArr[count] = a[i];
+			count++;
+		}
+	}
+	xoaPtTrung(subArr, count);
+	for (int i = 0; i < count; i++) {
+		cout << subArr[i] << " ";
+	}
+
+	delete[] subArr;
+}
+
+void xoaPT(int* a, int& n, int index) {
+	for (int i = index; i < n; i++) {
+		a[i] = a[i + 1];
+	}
+	n--;
+}
+
+void xoaPtTrung(int* a, int&n) {
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = i + 1; j < n; j++) {
+			if (a[i] == a[j]) {
+				xoaPT(a, n, j);
+				i--;
+			}
+		}
+	}
+}
+
+void timKiemDanhSach(Linked_List& list, int n, int* a, int& m) {
+	bool listFlag = true;
+	bool ArrFlag = true;
+	int ListCount = 0;
+	int ArrCount = 0;
+	int* subArr = new int[100];
+	int* subList = new int[100];
+
+	//Tim phan tu co trong list nhung khong co trong mang
+	for (Node* i = list.Head; i != NULL; i = i->pNext) {
+		subList[ListCount] = i->data;
+		ListCount++;
+	}
+
+	//Tim phan tu co trong mang nhung khong co trong list
+	for (int i = 0; i < m; i++) {
+		subArr[ArrCount] = a[i];
+		ArrCount++;
+	}
+
+	//Them phan tu xuat hien trong mang nhung khong xuat hien
+	// trong danh sach vao danh sach ban dau
+	for (int i = 0; i < ArrCount; i++) {
+		ThemPhanTuVaoCuoiDanhSach(list, subArr[i]);
+	}
+
+	//Them phan tu vao mang
+	//Tao mot mang moi va them vao mang do 2 mang con: 1 mang ban dau
+	// va 1 mang chua cac phan tu xuat hien trong danh sach nhung
+	// khong xuat hien trong mang ban dau
+	int* c = new int[100];
+	int k = 0;
+	for (int i = 0; i < m; i++) {
+		c[k] = a[i];
+		k++;
+	}
+	k = m;
+	for (int i = 0; i < ListCount; i++) {
+		c[k] = subList[i];
+		k++;
+	}
+
+	cout << "Danh sach lien ket sau khi them: ";
+	DuyetDanhSach(list);
+	cout << endl;
+	cout << "Mang sau khi them: ";
+	XuatMang(c, k);
+	cout << endl;
+
+
+	delete[] subArr;
+	delete[] subList;
+	delete[] c;
+}

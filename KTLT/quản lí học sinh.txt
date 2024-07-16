@@ -1,0 +1,204 @@
+//#include <iostream>
+//#include <string>
+//#include<iomanip>
+//using namespace std;
+//
+//typedef struct {
+//	string name;
+//	string ma;
+//	float diemToan;
+//	float diemLy;
+//	float diemHoa;
+//	float diemTongCong;
+//}THISINH;
+//
+//void nhapThongTin(THISINH& x) {
+//	getline(cin, x.ma);
+//	getline(cin, x.name);
+//	cin >> x.diemToan;
+//	cin >> x.diemLy;
+//	cin >> x.diemHoa;
+//	cin.ignore();
+//}
+//
+//void xuat(THISINH x) {
+//	cout << x.ma << "-" << x.name << "-" << x.diemToan << "-" << x.diemLy << "-" << x.diemHoa << endl;
+//}
+//
+//void nhapMang(THISINH*& x, int n) {
+//	for (int i = 0; i < n; i++) {
+//		nhapThongTin(x[i]);
+//	}
+//}
+//
+//void xuatMang(THISINH* x, int n) {
+//	for (int i = 0; i < n; i++) {
+//		xuat(x[i]);
+//	}
+//}
+//
+//void LietKeDau(THISINH* x, int n) {
+//	int count = 0;
+//	THISINH* temp = new THISINH[50];
+//	int sub = 0;
+//	for (int i = 0; i < n; i++) {
+//		if (x[i].diemHoa + x[i].diemLy+x[i].diemToan > 15 && x[i].diemHoa !=0
+//			&& x[i].diemLy !=0 && x[i].diemToan != 0) {
+//			temp[sub].name = x[i].name;
+//			sub++;
+//			count++;
+//		}
+//	}
+//	if (count == 0) {
+//		cout << -1 << endl;
+//	}
+//	else {
+//		for (int i = 0; i < sub; i++) {
+//			if (i != sub - 1) {
+//				cout << temp[i].name << "-";
+//			}
+//			else {
+//				cout << temp[i].name;
+//			}
+//		}
+//		cout << endl;
+//	}
+//	
+//}
+//
+//void sapXep(THISINH* a, int n) {
+//	for (int i = 0; i < n; i++) {
+//		a[i].diemTongCong = 0;
+//		a[i].diemTongCong += a[i].diemToan + a[i].diemLy + a[i].diemHoa;
+//	}
+//	for (int i = 0; i < n - 1; i++) {
+//		for (int j = i + 1; j < n; j++) {
+//			if (a[i].diemTongCong < a[j].diemTongCong) {
+//				THISINH temp = a[i];
+//				a[i] = a[j];
+//				a[j] = temp;
+//			}
+//		}
+//	}
+//
+//	for (int i = 0; i < n; i++) {
+//		if (i != n - 1) {
+//			cout << a[i].name << "-";
+//		}
+//		else {
+//			cout << a[i].name;
+//		}
+//	}
+//}
+//
+//int main() {
+//	int n; cin >> n;
+//	cin.ignore();
+//	THISINH* x = new THISINH[n];
+//	nhapMang(x, n);
+//	xuatMang(x, n);
+//	LietKeDau(x, n);
+//	sapXep(x, n);
+//
+//	delete[] x;
+//	return 0;
+//}
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+typedef struct {
+	string name;
+	float diemTrungBinh;
+}HOCSINH;
+
+typedef struct {
+	string TenLop;
+	int SiSo;
+	HOCSINH hs[50];
+}LOPHOC;
+
+void nhapHocSinh(HOCSINH x[], int& SiSo) {
+	for (int i = 0; i < SiSo; i++) {
+		getline(cin, x[i].name);
+		cin >> x[i].diemTrungBinh;
+		cin.ignore();
+	}
+}
+
+void xuatHocSinh(HOCSINH x[50], int SiSo) {
+	for (int i = 0; i < SiSo; i++) {
+		cout << x[i].name << endl;
+	}
+}
+
+void nhapThongTinLop(LOPHOC& a) {
+	getline(cin, a.TenLop);
+	cin >> a.SiSo;
+	cin.ignore();
+	nhapHocSinh(a.hs, a.SiSo);
+}
+
+void xuatThongTinLop(LOPHOC a) {
+	cout << a.TenLop << endl;
+	xuatHocSinh(a.hs, a.SiSo);
+}
+
+void nhap(LOPHOC*& a, int& n) {
+	for (int i = 0; i < n; i++) {
+		nhapThongTinLop(a[i]);
+	}
+}
+
+void xuat(LOPHOC* a, int n) {
+	for (int i = 0; i < n; i++) {
+		xuatThongTinLop(a[i]);
+	}
+}
+
+void timLopDongNhat(LOPHOC* a, int n) {
+	int max = a[0].SiSo;
+	for (int i = 0; i < n; i++) {
+		if (max < a[i].SiSo) {
+			max = a[i].SiSo;
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (max == a[i].SiSo) {
+			cout << a[i].TenLop << endl;
+		}
+	}
+}
+
+void timHocSinh(LOPHOC* a, int n) {
+	float max = a[0].hs[0].diemTrungBinh;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < a[i].SiSo; j++) {
+			if (max < a[i].hs[j].diemTrungBinh) {
+				max = a[i].hs[j].diemTrungBinh;
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < a[i].SiSo; j++) {
+			if (max == a[i].hs[j].diemTrungBinh) {
+				cout << a[i].hs[j].name << endl;
+			}
+		}
+	}
+}
+
+int main() {
+	int n;
+	cin >> n;
+	LOPHOC* a = new LOPHOC[n];
+	cin.ignore();
+	nhap(a, n);
+	xuat(a, n);
+	cout << endl;
+	timLopDongNhat(a, n);
+	timHocSinh(a, n);
+}

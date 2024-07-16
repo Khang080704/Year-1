@@ -1,0 +1,31 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <regex>
+
+int main() {
+    std::ifstream input("BINHLUAN.TXT");
+    std::ofstream output("SDT.TXT");
+    std::string line;
+    std::regex phone_regex(R"(\b0\d{8,9}\b)");
+    bool found = false;
+
+    while (std::getline(input, line)) {
+        std::smatch match;
+
+        while (std::regex_search(line, match, phone_regex)) {
+            output << match.str() << '\n';
+            line = match.suffix();
+            found = true;
+        }
+    }
+
+    if (!found) {
+        output << "HANG FAKE NEN KHONG AI MUA !";
+    }
+
+    input.close();
+    output.close();
+
+    return 0;
+}

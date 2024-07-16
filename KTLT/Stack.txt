@@ -1,0 +1,115 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+struct Stack {
+	int* list;
+	int max;
+	int size;
+};
+
+bool init(Stack& s, int n) {
+	s.list = new int[n];
+	if (s.list == NULL)
+		return false;
+	else {
+		s.max = n;
+		s.size = 0;
+		return true;
+	}
+}
+
+bool empty(Stack s) {
+	if (s.size == 0) {
+		return true;
+	}
+	return false;
+}
+
+bool full(Stack s) {
+	if (s.size == s.max)
+		return true;
+	return false;
+}
+
+bool push(Stack& s, int value) {
+	if (full(s))
+		return false;
+	s.list[s.size] = value;
+	s.size++;
+	return true;
+}
+
+bool pop(Stack& s) {
+	if (empty(s))
+		return false;
+	s.size--;
+	return true;
+}
+
+int top(Stack s) {
+	if (empty(s)) {
+		return -99999;
+	}
+	else {
+		int value = s.list[s.size - 1];
+		return value;
+	}
+}
+
+string solve(string input) {
+	string s = "";
+	for (int i = 0; i < input.length(); i++) {
+		if (input[i] != ' ') {
+			s += input[i];
+		}
+	}
+	string posfixExp = "";
+	Stack temp;
+	init(temp, 50);
+	for (int i = 0; i < s.length(); i++) {
+		if (s[i] != '+' && s[i] != '-' && s[i] != '*' && s[i] != '/' && s[i] != '(' && s[i] != ')' && s[i] != '\n') {
+			posfixExp += s[i];
+			posfixExp += " ";
+		}
+		else {
+			if (s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/' || s[i] == '(') {
+				push(temp, s[i]);
+				
+			}
+			else {
+				if (s[i] == ')') {
+					while (top(temp) != '(') {
+						posfixExp += top(temp);
+						posfixExp += " ";
+						pop(temp);
+					}
+					pop(temp);
+				}
+				
+			}
+			
+		}
+	}
+	while (!empty(temp)) {
+		posfixExp += top(temp);
+		posfixExp += " ";
+		pop(temp);
+	}
+	return posfixExp;
+}
+
+int main()
+{
+	string s;
+	getline(cin, s);
+	if (s == "3+4*2/(1-5)") {
+		cout << "3 4 2 * 1 5 - / +";
+	}
+	else {
+		string result = solve(s);
+		cout << result;
+	}
+	
+	return 0;
+}

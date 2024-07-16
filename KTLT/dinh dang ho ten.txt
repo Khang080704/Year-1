@@ -1,0 +1,36 @@
+#include<iostream>
+#include<string>
+#include<sstream>
+using namespace std;
+
+void fix(string s) {
+	stringstream ss(s);
+	string* partName = new string[100];
+	
+	int count = 0;
+	while (ss >> partName[count]) {
+		count++;
+	}
+
+	for (int i = 0; i < count; i++) {
+		if (partName[i][0] > 90) {
+			partName[i][0] = partName[i][0] - 32;
+		}
+		for (int j = 1; j < partName[i].length(); j++) {
+			if (partName[i][j] <= 90) {
+				partName[i][j] = partName[i][j] + 32;
+			}
+		}
+	}
+
+	for (int i = 0; i < count; i++) {
+		cout << partName[i] << " ";
+	}
+}
+
+int main()
+{
+	string s;
+	getline(cin, s);
+	fix(s);
+}

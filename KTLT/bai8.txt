@@ -1,0 +1,57 @@
+void xoaChan(Linked_List& list) {
+	Node* i = list.Head;
+	Node* temp = i;
+	while (temp->pNext != NULL) {
+		if (temp->data % 2 == 0) {
+			Del(list, temp);
+			break;
+		}
+	}
+
+}
+
+void Del_First(Linked_List& list) {
+	Node* p = list.Head;
+	p = p->pNext;
+	list.Head = p;
+}
+
+void Del_Last(Linked_List& list) {
+	Node* pTruoc = list.Head;
+	Node* pSau = pTruoc->pNext;
+
+	while (pSau->pNext != NULL) {
+		pTruoc = pSau;
+		pSau = pSau->pNext;
+	}
+	pTruoc->pNext = NULL;
+	list.Tail = pTruoc;
+
+}
+
+void Del(Linked_List& list, Node* p) {
+	if (p == list.Head) {
+		Del_First(list);
+	}
+	else {
+		if (p == list.Tail) {
+			Del_Last(list);
+		}
+		else {
+			Node* pTruoc = list.Head;
+			Node* pSau = pTruoc->pNext;
+
+			while (pSau != NULL) {
+				if (pSau == p) {
+					pTruoc->pNext = pSau->pNext;
+					pSau->pNext = NULL;
+					break;
+				}
+				else {
+					pTruoc = pTruoc->pNext;
+					pSau = pTruoc->pNext;
+				}
+			}
+		}
+	}
+}

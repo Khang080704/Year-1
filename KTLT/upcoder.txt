@@ -1,0 +1,182 @@
+#include<iostream>
+using namespace std;
+
+//-------------------------------------Bai 1------------------------------
+void xoa(int* a, int& n, int index) {
+	for (int i = index; i < n; i++) {
+		a[i] = a[i + 1];
+	}
+	n--;
+}
+
+void them(int* a, int& n, int x) {
+	a[n] = x;
+	n++;
+}
+
+void Sapxep(int* a, int n) {
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = i + 1; j < n; j++) {
+			if (a[i] > a[j]) {
+				int temp = a[i];
+				a[i] = a[j];
+				a[j] = temp;
+			}
+		}
+	}
+}
+
+int solve(int* a, int n) {
+	int sum = 0;
+	
+	if (n == 1) {
+		sum += a[0];
+	}
+	else {
+		Sapxep(a, n);
+		int x = a[0];
+		int y = a[1];
+		while (n > 1) {
+			x = x + y;
+			sum += x;
+			xoa(a, n, 0);
+			xoa(a, n, 0);
+			them(a, n, x);
+			Sapxep(a, n);
+			x = a[0];
+			y = a[1];
+		}
+	}
+	return sum;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	int a[100];
+
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+
+	cout << solve(a, n);
+}
+
+
+
+//---------------------------------Bai 3---------------------------------------------------
+
+
+//struct Node {
+//	int data;
+//	struct Node* pNext;
+//};
+//
+//struct Linked_List {
+//	Node* Head;
+//	Node* Tail;
+//};
+//
+//void KhoiTao(Linked_List& list) {
+//	list.Head = NULL;
+//	list.Tail = NULL;
+//}
+//Node* KhoiTaoNode(int x) {
+//	Node* p = new Node;
+//	if (p == NULL) cout << "Khong du bo nho de cap phat" << endl;
+//	else {
+//		p->data = x;
+//		p->pNext = NULL;
+//	}
+//
+//	return p;
+//}
+//
+//void ThemPhanTuVaoCuoiDanhSach(Linked_List& list, int x) {
+//	Node* p = KhoiTaoNode(x);
+//	if (list.Head == NULL) list.Head = list.Tail = p;
+//	else {
+//		list.Tail->pNext = p;
+//		list.Tail = p;
+//	}
+//}
+//
+//void DuyetDanhSach(Linked_List list) {
+//	for (Node* k = list.Head; k != NULL; k = k->pNext) {
+//		cout << k->data << " ";
+//	}
+//
+//	cout << endl;
+//}
+//
+//int soLuong(Linked_List list) {
+//	int count = 0;
+//
+//	for (Node* p = list.Head; p != NULL; p = p->pNext) {
+//		count++;
+//	}
+//
+//	return count;
+//}
+//
+//int solve(Linked_List list, int k) {
+//	int count = 0;
+//	int lenght = 1;
+//	int dem = soLuong(list);
+//	Node* p = list.Head;
+//	int a[100];
+//	int sub = 0;
+//	
+//	while (lenght <= dem) {
+//		for (int i = 1; i <= (dem - lenght) + 1; i++) {
+//			int localSum = 0;
+//			Node* q = p;
+//			for (int j = 1; j <= lenght; j++) {
+//				localSum += q->data;
+//				q = q->pNext;
+//			}
+//			if (localSum == k) {
+//				count++;
+//				a[sub] = lenght;
+//				sub++;
+//			}
+//			p = p->pNext;
+//		}
+//		lenght++;
+//		p = list.Head;
+//	}
+//
+//	if (count == 0) {
+//		return -1;
+//	}
+//	else {
+//		int max = 0;
+//		for (int i = 0; i < sub; i++) {
+//			if (max < a[i]) {
+//				max = a[i];
+//			}
+//		}
+//		return max;
+//	}
+//}
+//
+//int main() {
+//	int n = 0;
+//	cin >> n;
+//	Linked_List(list);
+//	KhoiTao(list);
+//	
+//	for (int i = 1; i <= n; i++) {
+//		int x;
+//		cin >> x;
+//		ThemPhanTuVaoCuoiDanhSach(list, x);
+//	}
+//
+//	int k;
+//	cin >> k;
+//
+//	cout << solve(list, k);
+//
+//	
+//	return 0;
+//}
